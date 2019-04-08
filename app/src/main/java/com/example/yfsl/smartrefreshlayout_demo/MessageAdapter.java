@@ -56,6 +56,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
      */
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView message;
+
+        /**
+         * 有参构造方法
+         * @param view item空间所在的布局
+         */
         public ViewHolder(@NonNull View view) {
             super(view);
             message = view.findViewById(R.id.message);
