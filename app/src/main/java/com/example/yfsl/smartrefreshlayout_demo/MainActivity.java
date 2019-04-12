@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         //加载布局
         setContentView(R.layout.activity_main);
 
-        initView();//初始化空间
+        initView();//初始化控件
         initData();//初始化数据
     }
 

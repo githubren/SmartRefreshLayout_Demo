@@ -35,7 +35,7 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
     }
 
     private void initMessage() {
-        for (int i = 0;i<50;i++){
+        for (int i = 0;i<15;i++){
             Message message = new Message("第"+i+"条消息");
             messageList.add(message);
         }
