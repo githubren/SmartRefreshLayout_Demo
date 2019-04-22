@@ -3,10 +3,56 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    
-    <TextView
+
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:id="@+id/message"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
+        <RadioGroup
+        android:id="@+id/qualified_status_group"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/qualified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/inspection_entry_selector"
+            android:button="@null"
+            android:paddingBottom="4dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="4dp"
+            android:text="合格"
+            android:textColor="@color/inspection_entry_color" />
+
+        <RadioButton
+            android:id="@+id/un_qualified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/inspection_entry_selector"
+            android:button="@null"
+            android:paddingBottom="4dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="4dp"
+            android:text="不合格"
+            android:textColor="@color/inspection_entry_color" />
+    </RadioGroup>
+    </RelativeLayout>
+
+    <View style="@style/HorizontalDivider"/>
 
 </LinearLayout>

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -20,8 +22,10 @@ import java.util.List;
 public class ClassicalRefreshActivity extends AppCompatActivity {
     private ImageButton back_btn;//返回按钮
     private SmartRefreshLayout smartRefresh;//刷新控件
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView,choose_pic_recycler;
     private List<Message> messageList = new ArrayList<>();//实体类对象集合
+//
+//    private Button btn1,btn2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +39,7 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
     }
 
     private void initMessage() {
-        for (int i = 0;i<15;i++){
+        for (int i = 0;i<25;i++){
             Message message = new Message("第"+i+"条消息");
             messageList.add(message);
         }
@@ -45,6 +49,11 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
         back_btn = findViewById(R.id.back_btn);
         smartRefresh = findViewById(R.id.smartRefresh);
         recyclerView = findViewById(R.id.recyclerView);
+        choose_pic_recycler = findViewById(R.id.choose_pic_recycler);
+
+//
+//        btn1 = findViewById(R.id.btn1);
+//        btn2 = findViewById(R.id.btn2);
     }
 
     private void initData() {
@@ -69,8 +78,15 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
                 smartRefresh.finishLoadMore();
             }
         });
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this){
+            @Override
+            public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+            return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        };
         //设置item组件垂直向下分布
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(layoutManager);
         //创建适配器对象  传入实体类对象集合 实现了数据和适配器的互通
         MessageAdapter messageAdapter = new MessageAdapter(messageList);
         //recyclerview绑定适配器  实现recyclerview和适配器的互通 从而实现recyclerview和数据的互通 所以说适配器是用来传递数据的
