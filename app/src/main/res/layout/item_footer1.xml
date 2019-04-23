@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:id="@+id/header"-->
+        <!--android:text="底部1"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="22sp"/>-->
+
+    <!--<View style="@style/HorizontalDivider"/>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!--<TextView style="@style/work_detail_dialog_com_sec_title_style" />-->
+        <ImageView style="@style/new_title_circle_style" />
+
+        <TextView
+            style="@style/new_draw_left_style"
+            android:text="报修图片" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

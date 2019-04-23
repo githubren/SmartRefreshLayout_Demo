@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:id="@+id/header"-->
+        <!--android:text="底部2"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="22sp"/>-->
+    <RelativeLayout
+        android:id="@+id/entry_commit_container"
+        style="@style/new_commit_container_style">
+
+    <RelativeLayout
+        android:id="@+id/entry_work_order_commit"
+        style="@style/new_commit_content_style"
+        android:clickable="true">
+
+        <TextView
+            style="@style/new_commit_style"
+            android:text="提交" />
+    </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

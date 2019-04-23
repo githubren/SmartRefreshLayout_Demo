@@ -22,7 +22,7 @@ import java.util.List;
 public class ClassicalRefreshActivity extends AppCompatActivity {
     private ImageButton back_btn;//返回按钮
     private SmartRefreshLayout smartRefresh;//刷新控件
-    private RecyclerView recyclerView,choose_pic_recycler;
+    private RecyclerView recyclerView;
     private List<Message> messageList = new ArrayList<>();//实体类对象集合
 //
 //    private Button btn1,btn2;
@@ -49,8 +49,6 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
         back_btn = findViewById(R.id.back_btn);
         smartRefresh = findViewById(R.id.smartRefresh);
         recyclerView = findViewById(R.id.recyclerView);
-        choose_pic_recycler = findViewById(R.id.choose_pic_recycler);
-
 //
 //        btn1 = findViewById(R.id.btn1);
 //        btn2 = findViewById(R.id.btn2);
@@ -88,7 +86,7 @@ public class ClassicalRefreshActivity extends AppCompatActivity {
         //设置item组件垂直向下分布
         recyclerView.setLayoutManager(layoutManager);
         //创建适配器对象  传入实体类对象集合 实现了数据和适配器的互通
-        MessageAdapter messageAdapter = new MessageAdapter(messageList);
+        MessageAdapter messageAdapter = new MessageAdapter(messageList,this);
         //recyclerview绑定适配器  实现recyclerview和适配器的互通 从而实现recyclerview和数据的互通 所以说适配器是用来传递数据的
         recyclerView.setAdapter(messageAdapter);
     }
