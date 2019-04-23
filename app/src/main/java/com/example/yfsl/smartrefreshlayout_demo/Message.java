@@ -6,6 +6,15 @@ public class Message {
     private String message;
     private int PATITEM_ID;
     private boolean PATITEM_FLAG;
+    private String PATITEM_DESCRIBE;
+
+    public String getPATITEM_DESCRIBE() {
+        return PATITEM_DESCRIBE;
+    }
+
+    public void setPATITEM_DESCRIBE(String PATITEM_DESCRIBE) {
+        this.PATITEM_DESCRIBE = PATITEM_DESCRIBE;
+    }
 
     public int getPATITEM_ID() {
         return PATITEM_ID;

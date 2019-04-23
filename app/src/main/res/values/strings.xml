@@ -3,4 +3,7 @@
     
     <string name="btn_classicalRefresh">经典风格</string>
     <string name="title_classical">经典风格</string>
+
+    <string name="str_word_calc">%1$d/150</string>
+    <string name="str_word_beyond_limit">你输入的字数已经超过了限制！</string>
 </resources>

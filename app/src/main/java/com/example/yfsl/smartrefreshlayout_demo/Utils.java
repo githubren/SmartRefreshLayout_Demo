@@ -1,6 +1,12 @@
 package com.example.yfsl.smartrefreshlayout_demo;
 
+import android.content.Context;
+import android.text.Editable;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import static android.widget.Toast.makeText;
 
 public class Utils{
     public static void setVisible(View... views) {
@@ -43,6 +49,15 @@ public class Utils{
                 }
             }
         }
+    }
 
+    public static String getEditTextString(EditText et) {
+        Editable text = et.getText();
+        return text != null && text.toString().trim().length() != 0 ? text.toString().trim() : null;
+    }
+
+    public static void toastShort(Context context, int id) {
+        if (context != null)
+            makeText(context, context.getString(id), Toast.LENGTH_SHORT).show();
     }
 }

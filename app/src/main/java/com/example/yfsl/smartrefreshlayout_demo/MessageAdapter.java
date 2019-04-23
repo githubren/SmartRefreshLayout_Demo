@@ -4,14 +4,18 @@ package com.example.yfsl.smartrefreshlayout_demo;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,19 +28,30 @@ import java.util.Map;
  */
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Message> mMessageList;
+    private String setDescribe;
+    private String getDescribe;
     Map<Integer, Boolean> flagList = new HashMap<>();
     private Context mContext;
+
+    private int editStart;
+    private int editEnd;
+    private long toastInterval;
+    private final int INTERVAL = 3*1000;
 
     private final static int ITEM_HEADER=0;
     private final static int ITEM_CONTENT=1;
     private final static int ITEM_FOOT1=2;
     private final static int ITEM_FOOT2=3;
     private final static int ITEM_FOOT3=4;
+    private final static int ITEM_FOOT4=5;
+    private final static int ITEM_FOOT5=6;
 
     private int mHeader=1;
     private int mFoot1=1;
     private int mFoot2=1;
     private int mFoot3=1;
+    private int mFoot4=1;
+    private int mFoot5=1;
 
     /**
      * 创建viewholder
@@ -69,6 +84,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer3,viewGroup,false);
             return new FooterView3Holder(view);
         }
+        if (i == ITEM_FOOT4){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer4,viewGroup,false);
+            return new FooterView4Holder(view);
+        }
+        if (i == ITEM_FOOT5){
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer5_insdec,viewGroup,false);
+            return new FooterView5Holder(view);
+        }
         return null;
     }
 
@@ -77,13 +100,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (mHeader != 0 && position == 0){
             return ITEM_HEADER;
         }
-        if (mFoot1 != 0 && position == mMessageList.size()+mHeader){
+        if (mFoot4 != 0 && position == mMessageList.size()+mHeader){
+            return ITEM_FOOT4;
+        }
+        if (mFoot5 != 0 && position == mMessageList.size()+mHeader+mFoot4){
+            return ITEM_FOOT5;
+        }
+        if (mFoot1 != 0 && position == mMessageList.size()+mHeader+mFoot4+mFoot5){
             return ITEM_FOOT1;
         }
-        if (mFoot2 != 0 && position == mMessageList.size()+mHeader+mFoot1+mFoot3){
+        if (mFoot2 != 0 && position == mMessageList.size()+mHeader+mFoot4+mFoot5+mFoot1+mFoot3){
             return ITEM_FOOT2;
         }
-        if (mFoot3 != 0 && position == mMessageList.size()+mHeader+mFoot1){
+        if (mFoot3 != 0 && position == mMessageList.size()+mHeader+mFoot1+mFoot4+mFoot5){
             return ITEM_FOOT3;
         }
         return ITEM_CONTENT;
@@ -95,7 +124,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param viewHolder
      * @param i
      */
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int i) {
         if (viewHolder instanceof ViewHolder){//是普通item的时候  i从1开始 i=0是头部 （mHeader=1）
             //拿到普通item第一个位置的Message对象
             final Message message = mMessageList.get(i-mHeader);
@@ -131,12 +160,50 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if (viewHolder instanceof FooterView2Holder){
+//            FooterView5Holder footerView5Holder = new FooterView5Holder(viewHolder.itemView);
             ((FooterView2Holder) viewHolder).entry_work_order_commit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.e("TAG","输出的："+getDescribe.toString());
                     Log.e("TAG",flagList.toString());
                 }
             });
+        }
+
+        if (viewHolder instanceof FooterView5Holder){
+            ((FooterView5Holder) viewHolder).inspectDec.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    ((FooterView5Holder) viewHolder).content_number_tip_tv.setText(charSequence.length()+"/150");
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    editStart = ((FooterView5Holder)viewHolder).inspectDec.getSelectionStart();
+                    editEnd = ((FooterView5Holder)viewHolder).inspectDec.getSelectionEnd();
+                    if (editable.length()>150){
+                        long l = System.currentTimeMillis();
+                        if (l-toastInterval >= INTERVAL){
+                            Toast.makeText(mContext, "你输入的字数已经超过了限制！", Toast.LENGTH_SHORT).show();
+                            toastInterval = l;
+                        }
+                        editable.delete(editStart-1,editEnd);
+                        ((FooterView5Holder)viewHolder).inspectDec.setText(editable);
+                        ((FooterView5Holder)viewHolder).inspectDec.setSelection(150);
+                    }
+                }
+            });
+            Message message2 = mMessageList.get(i-mHeader-mFoot4-mMessageList.size());
+            setDescribe = ((FooterView5Holder) viewHolder).inspectDec.getText().toString();
+            message2.setPATITEM_DESCRIBE(setDescribe);
+            Log.e("TAG","输入的："+setDescribe);
+            getDescribe = message2.getPATITEM_DESCRIBE();
+            Log.e("TAG","拿到的："+getDescribe);
         }
 //        if (viewHolder instanceof FooterView3Holder){
 //            RecyclerView choosePicRcv = ((FooterView3Holder) viewHolder).choosePicRecyclerView;
@@ -159,7 +226,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mMessageList.size()+mHeader+mFoot1+mFoot2+mFoot3;
+        return mMessageList.size()+mHeader+mFoot1+mFoot2+mFoot3+mFoot4+mFoot5;
     }
 
     /**
@@ -216,6 +283,23 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public FooterView3Holder(@NonNull View itemView) {
             super(itemView);
 //            choosePicRecyclerView = itemView.findViewById(R.id.choose_pic_recycler);
+        }
+    }
+
+    class FooterView4Holder extends RecyclerView.ViewHolder{
+
+        public FooterView4Holder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    class FooterView5Holder extends RecyclerView.ViewHolder{
+        EditText inspectDec;
+        TextView content_number_tip_tv;
+        public FooterView5Holder(@NonNull View itemView) {
+            super(itemView);
+            inspectDec = itemView.findViewById(R.id.content_et);
+            content_number_tip_tv = itemView.findViewById(R.id.content_number_tip_tv);
         }
     }
 }
