@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/com_radius_gray_bg">
+
+    <TextView
+        android:id="@+id/square_word_calc"
+        style="@style/high_square_word_track_style"
+        android:layout_marginRight="8dp" />
+
+    <EditText
+        android:id="@+id/square_edit"
+        style="@style/high_square_et_style"
+        android:layout_above="@id/square_word_calc"
+        android:background="@null"
+        android:hint="请输入相关描述，不超过150字"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:paddingTop="7dp" />
+
+</RelativeLayout>

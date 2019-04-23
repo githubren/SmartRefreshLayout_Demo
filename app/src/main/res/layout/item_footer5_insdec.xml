@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/background_edittext"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/content_et"
+        android:hint="请输入描述，字数不超过150"
+        android:textSize="14sp"
+        android:gravity="left|top"
+        android:textColor="#333333"
+        android:textColorHint="#cbcaca"
+        android:paddingTop="7dp"
+        android:paddingLeft="7dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/150"
+        android:textSize="12sp"
+        android:textColor="#cbcaca"
+        android:layout_alignBottom="@id/content_et"
+        android:layout_alignRight="@id/content_et"
+        android:paddingBottom="3dp"
+        android:paddingRight="5dp"
+        android:id="@+id/content_number_tip_tv"
+        />
+
+</RelativeLayout>
