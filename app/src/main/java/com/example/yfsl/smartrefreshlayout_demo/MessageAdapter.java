@@ -1,22 +1,26 @@
 package com.example.yfsl.smartrefreshlayout_demo;
 
-
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private String getDescribe;
     Map<Integer, Boolean> flagList = new HashMap<>();
     private Context mContext;
+
+    private int TAKE_PHOTO = 1;
 
     private int editStart;
     private int editEnd;
@@ -64,31 +70,38 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         if (i ==ITEM_CONTENT){
+            Log.e("TAG","加载item_content");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_message,viewGroup,false);
             ViewHolder viewHolder = new ViewHolder(view);
             return viewHolder;
         }
         if (i == ITEM_HEADER){
+            Log.e("TAG","加载头部");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_header,viewGroup,false);
             return new HeaderViewHolder(view);
         }
         if (i == ITEM_FOOT1){
+            Log.e("TAG","加载“报修图片”TextView");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer1,viewGroup,false);
             return new FooterView1Holder(view);
         }
         if (i == ITEM_FOOT2){
+            Log.e("TAG","加载“提交”");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer2,viewGroup,false);
             return new FooterView2Holder(view);
         }
         if (i == ITEM_FOOT3){
+            Log.e("TAG","加载ChoosePicRecyclerView");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer3,viewGroup,false);
             return new FooterView3Holder(view);
         }
         if (i == ITEM_FOOT4){
+            Log.e("TAG","加载“巡检说明”TextView");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer4,viewGroup,false);
             return new FooterView4Holder(view);
         }
         if (i == ITEM_FOOT5){
+            Log.e("TAG","加载edittext");
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_footer5_insdec,viewGroup,false);
             return new FooterView5Holder(view);
         }
@@ -130,13 +143,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final Message message = mMessageList.get(i-mHeader);
             //设置内容
             ((ViewHolder)viewHolder).message1.setText(message.getMessage());
-//            int buttonId = ((ViewHolder) viewHolder).qualified_status_group.getCheckedRadioButtonId();
-//            String PATITEM_FLAG = buttonId == R.id.qualified ? "合格" : "不合格";
-//            message.setPATITEM_FLAG(TextUtils.equals(PATITEM_FLAG,"合格"));
-//            boolean FLAG = message.isPATITEM_FLAG();
-            message.setPATITEM_ID(i);
+//            message.setPATITEM_ID(i);
             Log.e("TAG","message"+i+"的ID为："+message.getPATITEM_ID());
-//            Log.e("TAG","此项合格:"+FLAG);
 
             ((ViewHolder) viewHolder).qualified_status_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -149,28 +157,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     Log.e("TAG","MESSAGE"+i+":"+message.isPATITEM_FLAG());
                     flagList.put(message.getPATITEM_ID(),message.isPATITEM_FLAG());
-                }
-            });
-
-
-//            String flag = getFlag((ViewHolder) viewHolder);
-//            message.setPATITEM_FLAG(TextUtils.equals(flag,""));
-//            boolean FLAG = message.isPATITEM_FLAG();
-//            Log.e("TAG","此项合格:"+FLAG);
-        }
-
-        if (viewHolder instanceof FooterView2Holder){
-//            FooterView5Holder footerView5Holder = new FooterView5Holder(viewHolder.itemView);
-            ((FooterView2Holder) viewHolder).entry_work_order_commit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e("TAG","输出的："+getDescribe.toString());
-                    Log.e("TAG",flagList.toString());
+                    Log.e("TAG","FLAG:"+flagList);
+                    SelectItem selectItem = (SelectItem) mContext;
+                    selectItem.packFlag(flagList);
                 }
             });
         }
 
         if (viewHolder instanceof FooterView5Holder){
+            final Message message2 = mMessageList.get(i-mHeader-mFoot4-mMessageList.size());
+            //给edittext设置tag 放置数据混乱 此处设置 在监听的afterTextChanged方法中进行判断
+            ((FooterView5Holder) viewHolder).inspectDec.setTag(viewHolder.getLayoutPosition());
             ((FooterView5Holder) viewHolder).inspectDec.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -184,45 +181,55 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    editStart = ((FooterView5Holder)viewHolder).inspectDec.getSelectionStart();
-                    editEnd = ((FooterView5Holder)viewHolder).inspectDec.getSelectionEnd();
-                    if (editable.length()>150){
-                        long l = System.currentTimeMillis();
-                        if (l-toastInterval >= INTERVAL){
-                            Toast.makeText(mContext, "你输入的字数已经超过了限制！", Toast.LENGTH_SHORT).show();
-                            toastInterval = l;
+                    //判断控件edittext的tag和布局的位置是否相同
+                    if ((Integer)((FooterView5Holder) viewHolder).inspectDec.getTag() == viewHolder.getLayoutPosition() && ((FooterView5Holder) viewHolder).inspectDec.hasFocus()){
+                        editStart = ((FooterView5Holder)viewHolder).inspectDec.getSelectionStart();
+                        editEnd = ((FooterView5Holder)viewHolder).inspectDec.getSelectionEnd();
+                        if (editable.length()>150){
+                            long l = System.currentTimeMillis();
+                            if (l-toastInterval >= INTERVAL){
+                                Toast.makeText(mContext, "你输入的字数已经超过了限制！", Toast.LENGTH_SHORT).show();
+                                toastInterval = l;
+                            }
+                            editable.delete(editStart-1,editEnd);
+                            ((FooterView5Holder)viewHolder).inspectDec.setText(editable);
+                            ((FooterView5Holder)viewHolder).inspectDec.setSelection(150);
                         }
-                        editable.delete(editStart-1,editEnd);
-                        ((FooterView5Holder)viewHolder).inspectDec.setText(editable);
-                        ((FooterView5Holder)viewHolder).inspectDec.setSelection(150);
+                        setDescribe = editable.toString();
+                        message2.setPATITEM_DESCRIBE(setDescribe);
+                        getDescribe = message2.getPATITEM_DESCRIBE();
+                        Log.e("TAG","输入的："+editable);
+                        Log.e("TAG","拿到的："+editable);
                     }
+                    SelectItem selectItem = (SelectItem) mContext;
+                    selectItem.select(((FooterView5Holder) viewHolder).inspectDec,editable.toString());
                 }
             });
-            Message message2 = mMessageList.get(i-mHeader-mFoot4-mMessageList.size());
-            setDescribe = ((FooterView5Holder) viewHolder).inspectDec.getText().toString();
-            message2.setPATITEM_DESCRIBE(setDescribe);
-            Log.e("TAG","输入的："+setDescribe);
-            getDescribe = message2.getPATITEM_DESCRIBE();
-            Log.e("TAG","拿到的："+getDescribe);
         }
-//        if (viewHolder instanceof FooterView3Holder){
-//            RecyclerView choosePicRcv = ((FooterView3Holder) viewHolder).choosePicRecyclerView;
-//            choosePicRcv.setLayoutManager(new GridLayoutManager(mContext,4));
-//            ChooseImageAdapter chooseImageAdapter = new ChooseImageAdapter((width - 3 * MeasureUtil.dip2px(mContext, 5)) / 4);
-//            choosePicRcv.setAdapter(chooseImageAdapter);
-//        }
-    }
 
-//    private String getFlag(ViewHolder vh){
-//        int buttonId = vh.qualified_status_group.getCheckedRadioButtonId();
-//        if (buttonId == R.id.qualified){
-//            return "合格";
-//        }
-//        if (buttonId == R.id.un_qualified){
-//            return "不合格";
-//        }
-//        return "";
-//    }
+        if (viewHolder instanceof FooterView2Holder){
+            viewHolder.setIsRecyclable(true);
+            ((FooterView2Holder) viewHolder).entry_work_order_commit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("TAG","输出的："+setDescribe);
+                    Log.e("TAG",flagList.toString());
+                }
+            });
+        }
+
+        if (viewHolder instanceof FooterView3Holder){
+            ImageButton choosePicBtn = ((FooterView3Holder) viewHolder).choosepic_btn;
+            choosePicBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("TAG","点击ChoosePicRecyclerView");
+                    SelectItem clickItemChoosePic = (SelectItem) mContext;
+                    clickItemChoosePic.click(((FooterView3Holder) viewHolder).choosepic_btn,i);
+                }
+            });
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -279,10 +286,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     class FooterView3Holder extends RecyclerView.ViewHolder{
-//        ChoosePicRecyclerView choosePicRecyclerView;
+        ImageButton choosepic_btn;
         public FooterView3Holder(@NonNull View itemView) {
             super(itemView);
-//            choosePicRecyclerView = itemView.findViewById(R.id.choose_pic_recycler);
+            choosepic_btn = itemView.findViewById(R.id.choosepic_btn);
         }
     }
 
@@ -301,5 +308,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             inspectDec = itemView.findViewById(R.id.content_et);
             content_number_tip_tv = itemView.findViewById(R.id.content_number_tip_tv);
         }
+    }
+
+    protected interface SelectItem{
+        void select(View view, String str);
+
+        void click(View view,int position);
+
+        void packFlag(Map<Integer,Boolean> flagList);
     }
 }

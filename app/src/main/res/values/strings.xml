@@ -6,4 +6,6 @@
 
     <string name="str_word_calc">%1$d/150</string>
     <string name="str_word_beyond_limit">你输入的字数已经超过了限制！</string>
+
+    <string name="str_read_external_no_permisson">读取存储器权限未授予，去设置中心设置</string>
 </resources>

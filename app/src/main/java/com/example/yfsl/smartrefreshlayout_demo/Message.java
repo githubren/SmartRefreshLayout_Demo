@@ -7,6 +7,24 @@ public class Message {
     private int PATITEM_ID;
     private boolean PATITEM_FLAG;
     private String PATITEM_DESCRIBE;
+    private int TASK_ID;
+    private int NODE_ID;
+
+    public int getTASK_ID() {
+        return TASK_ID;
+    }
+
+    public void setTASK_ID(int TASK_ID) {
+        this.TASK_ID = TASK_ID;
+    }
+
+    public int getNODE_ID() {
+        return NODE_ID;
+    }
+
+    public void setNODE_ID(int NODE_ID) {
+        this.NODE_ID = NODE_ID;
+    }
 
     public String getPATITEM_DESCRIBE() {
         return PATITEM_DESCRIBE;
